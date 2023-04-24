@@ -8,7 +8,7 @@
 #include<sys/stat.h>
 #include<mutex>
 
-#define LOG_FILE_PATH "log/"
+#define LOG_FILE_PATH "log/" // 修改日志文件存放路径
 
 class LogFile
 {
@@ -22,19 +22,17 @@ public:
     ~LogFile() { m_file.close(); }
 
     template <typename T>
-    void WriteLog(const T &arg)
-    {
+    void WriteLog(const T &arg){
         m_file << arg;
-        m_file.flush();
     }
 
     template <typename T, typename... Types>
-    void WriteLog(const T &firstArg, const Types &...args)
-    {
+    void WriteLog(const T &firstArg, const Types &...args){
         m_file << firstArg;
-        m_file.flush();
         WriteLog(args...);
     }
+
+    void Flush() { m_file.flush(); }
 
     std::string GetFileName() { return m_file_name; }
 private:
@@ -45,9 +43,9 @@ private:
 
 uint LogFile::m_file_num = 0;
 
-
-#define MAX_LOG_FILE_SIZE 1024
-#define MAX_LOG_FILE_NUM 10
+#define MAX_LOG_CACHE_SIZE 1024 // 修改缓存日志大小
+#define MAX_LOG_FILE_SIZE 2048  // 修改单文件最大大小
+#define MAX_LOG_FILE_NUM 10     // 修改最大文件数
 
 
 class LogFileManage
@@ -90,13 +88,15 @@ private:
         struct stat statbuf;
         stat(m_log_file->GetFileName().c_str(), &statbuf);
 
-        std::cout << "file size: " << statbuf.st_size << std::endl;
-
         if (statbuf.st_size > MAX_LOG_FILE_SIZE){
             delete m_log_file;
             m_log_file = new LogFile();
 
             RemoveFile();
+        }
+
+        if(m_log_file->GetFileName().size() > MAX_LOG_CACHE_SIZE){
+            m_log_file->Flush();
         }
     }
 
