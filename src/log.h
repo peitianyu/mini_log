@@ -21,9 +21,19 @@ public:
 
     ~LogFile() { m_file.close(); }
 
-    void WriteLog(const std::string &log){
-        m_file << log;
+    template <typename T>
+    void WriteLog(const T &arg)
+    {
+        m_file << arg;
         m_file.flush();
+    }
+
+    template <typename T, typename... Types>
+    void WriteLog(const T &firstArg, const Types &...args)
+    {
+        m_file << firstArg;
+        m_file.flush();
+        WriteLog(args...);
     }
 
     std::string GetFileName() { return m_file_name; }
@@ -120,7 +130,15 @@ private:
     std::mutex m_mutex;
 };
 
-#define LOG_FILE_DEBUG(...) LogFileManage::GetInstance()->WriteLog("[", __TIME__, "] ", __VA_ARGS__)
+#define LOG_FILE_CORE(...) LogFileManage::GetInstance()->WriteLog("[", __TIME__, "] ", __VA_ARGS__)
+
+#define LOG_FILE_DEBUG(...) LOG_FILE_CORE("[DEBUG] ", __VA_ARGS__)
+
+#define LOG_FILE_INFO(...) LOG_FILE_CORE(" [INFO] ", __VA_ARGS__)
+
+#define LOG_FILE_WARN(...) LOG_FILE_CORE(" [WARN] ", __VA_ARGS__)
+
+#define LOG_FILE_ERROR(...) LOG_FILE_CORE("[ERROR] ", __VA_ARGS__)
 
 
 #endif // LOG_FILE
