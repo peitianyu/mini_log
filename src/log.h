@@ -1,8 +1,6 @@
 #ifndef __COMMON_LOG_H__
 #define __COMMON_LOG_H__
 
-#define LOG_FILE
-#ifdef LOG_FILE
 #include<fstream>
 #include<sstream>
 #include<sys/stat.h>
@@ -118,7 +116,6 @@ private:
         }
     }
 
-
     LogFileManage() : m_log_file(nullptr) {}
     ~LogFileManage()
     {
@@ -154,8 +151,6 @@ std::ostream &STD_COUT(std::ostream &os, const T &firstArg, const Types &...args
 
 #define LOG_ERROR(...) LOG_FILE_CORE("[ERROR] [", __FUNCTION__, __LINE__, "]", __VA_ARGS__)
 
-
-#endif // LOG_FILE
 
 
 #endif // __COMMON_LOG_H__
