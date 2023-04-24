@@ -146,13 +146,13 @@ std::ostream &STD_COUT(std::ostream &os, const T &firstArg, const Types &...args
 #define LOG_FILE_CORE(...) STD_COUT(std::cout, "[", __TIME__, "] ", __VA_ARGS__)
 #endif // LOG_TO_FILE
 
-#define LOG_DEBUG(...) LOG_FILE_CORE("[DEBUG] ", __VA_ARGS__)
+#define LOG_DEBUG(...) LOG_FILE_CORE("[DEBUG] [", __FUNCTION__, __LINE__, "]", __VA_ARGS__)
 
 #define LOG_INFO(...) LOG_FILE_CORE(" [INFO] ", __VA_ARGS__)
 
-#define LOG_WARN(...) LOG_FILE_CORE(" [WARN] ", __VA_ARGS__)
+#define LOG_WARN(...) LOG_FILE_CORE(" [WARN] [", __FUNCTION__, __LINE__, "]", __VA_ARGS__)
 
-#define LOG_ERROR(...) LOG_FILE_CORE("[ERROR] ", __VA_ARGS__)
+#define LOG_ERROR(...) LOG_FILE_CORE("[ERROR] [", __FUNCTION__, __LINE__, "]", __VA_ARGS__)
 
 
 #endif // LOG_FILE
