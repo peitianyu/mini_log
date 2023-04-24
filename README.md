@@ -5,6 +5,9 @@
 #define MAX_LOG_CACHE_SIZE 1024 // 修改缓存日志大小
 #define MAX_LOG_FILE_SIZE 2048  // 修改单文件最大大小
 #define MAX_LOG_FILE_NUM 10     // 修改最大文件数
+
+// 配置输出到文件还是终端
+#define LOG_TO_FILE
 ```
 
 ## 测试方法

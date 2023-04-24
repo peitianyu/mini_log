@@ -35,6 +35,8 @@ public:
     void Flush() { m_file.flush(); }
 
     std::string GetFileName() { return m_file_name; }
+
+    std::size_t GetFileSize() { return m_file.tellp(); }
 private:
     static uint m_file_num;
     std::string m_file_name;
@@ -95,7 +97,8 @@ private:
             RemoveFile();
         }
 
-        if(m_log_file->GetFileName().size() > MAX_LOG_CACHE_SIZE){
+        if (m_log_file->GetFileSize() > MAX_LOG_CACHE_SIZE)
+        {
             m_log_file->Flush();
         }
     }
@@ -130,15 +133,26 @@ private:
     std::mutex m_mutex;
 };
 
+template <typename T>
+std::ostream &STD_COUT(std::ostream &os, const T &arg) { return os << arg;}
+   
+template <typename T, typename... Types>
+std::ostream &STD_COUT(std::ostream &os, const T &firstArg, const Types &...args){ os << firstArg << " "; return STD_COUT(os, args...);}
+
+// #define LOG_TO_FILE
+#ifdef LOG_TO_FILE
 #define LOG_FILE_CORE(...) LogFileManage::GetInstance()->WriteLog("[", __TIME__, "] ", __VA_ARGS__)
+#else
+#define LOG_FILE_CORE(...) STD_COUT(std::cout, "[", __TIME__, "] ", __VA_ARGS__)
+#endif // LOG_TO_FILE
 
-#define LOG_FILE_DEBUG(...) LOG_FILE_CORE("[DEBUG] ", __VA_ARGS__)
+#define LOG_DEBUG(...) LOG_FILE_CORE("[DEBUG] ", __VA_ARGS__)
 
-#define LOG_FILE_INFO(...) LOG_FILE_CORE(" [INFO] ", __VA_ARGS__)
+#define LOG_INFO(...) LOG_FILE_CORE(" [INFO] ", __VA_ARGS__)
 
-#define LOG_FILE_WARN(...) LOG_FILE_CORE(" [WARN] ", __VA_ARGS__)
+#define LOG_WARN(...) LOG_FILE_CORE(" [WARN] ", __VA_ARGS__)
 
-#define LOG_FILE_ERROR(...) LOG_FILE_CORE("[ERROR] ", __VA_ARGS__)
+#define LOG_ERROR(...) LOG_FILE_CORE("[ERROR] ", __VA_ARGS__)
 
 
 #endif // LOG_FILE
